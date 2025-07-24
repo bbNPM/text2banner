@@ -1,6 +1,9 @@
 # text2banner
 This project is a Strapi v5 plugin that provides functionality to generate a simple banner using customizable text and color codes.
 
+### Manually Installation
+1. Move to `plugins` folder `WORKDIR/src/plugins/`.
+2. Use Git Pull the source code to the `plugins` folder.
 
 ### Initial Setup
 1. Put below source code to `WORKDIR/config/plugins.ts`
