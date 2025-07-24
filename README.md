@@ -3,7 +3,7 @@ This project is a Strapi v5 plugin that provides functionality to generate a sim
 
 
 ### Initial Setup
-Put below source code to `WORKDIR/config/plugins.ts`
+1. Put below source code to `WORKDIR/config/plugins.ts`
 ```
 export default () => ({
 	'text2banner': {
@@ -11,4 +11,10 @@ export default () => ({
 		resolve: './src/plugins/text2banner'
 	},
 });
+```
+2. Then move to plugin folder `cd WORKDIR/src/plugins/text2banner`
+3. Please use the following command to set up the plugin:
+```
+npm install
+npm run build
 ```
