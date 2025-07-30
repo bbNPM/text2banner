@@ -21,11 +21,11 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
 
 
       const rootDir = process.cwd();
-      const genFileName = post.bannerName + '.png';
+      const genFileName = post.bannerName + '.jpeg';
       const genFilePath = `${rootDir}/public/uploads/${genFileName}`
       const file = await fs.writeFile(
         genFilePath,
-        canvas.toBuffer('image/png'),
+        canvas.toBuffer('image/jpeg'),
         (err) => {
           if (err) {
             throw new errors.ApplicationError(err);
