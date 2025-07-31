@@ -1,8 +1,8 @@
 import type { Core } from '@strapi/strapi';
 import { errors } from '@strapi/utils';
-const { createCanvas } = require('canvas');
-const fs = require ('fs');
-const mime = require('mime-types');
+import { createCanvas } from 'canvas';
+import * as fs from 'fs';
+import mime from 'mime';
 
 const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
   async generateBanner(ctx) {
@@ -10,6 +10,7 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
       const post = ctx.request.body;
       const canvas = createCanvas(post.bannerWidth, post.bannerHeight);
       const context = canvas.getContext('2d');
+      const numNext = post.title.match(/\n*$/)[0].length
 
       context.fillStyle = post.backgroundColor;
       context.fillRect(0, 0, post.bannerWidth, post.bannerHeight);
@@ -17,16 +18,16 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
       context.fillStyle = post.fontColor;
       context.font = post.fontSize + 'px Menlo';
       context.textAlign = 'center';
-      context.fillText(post.title, post.bannerWidth / 2, post.bannerHeight / 2);
+      context.fillText(post.title, (post.bannerWidth - (numNext * post.fontSize)) / 2, (post.bannerHeight - (numNext * post.fontSize)) / 2);
 
 
       const rootDir = process.cwd();
-      const genFileName = post.bannerName + '.jpeg';
+      const genFileName = post.bannerName + '.jpg';
       const genFilePath = `${rootDir}/public/uploads/${genFileName}`
       const file = await fs.writeFile(
         genFilePath,
         canvas.toBuffer('image/jpeg'),
-        (err) => {
+        (err: any) => {
           if (err) {
             throw new errors.ApplicationError(err);
             return;
@@ -41,12 +42,12 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
         files: {
           filepath: genFilePath,
           originalFilename: genFileName,
-          mimetype: mime.lookup(genFilePath),
+          mimetype: mime.getType(genFilePath),
         }, 
       });
 
       // Remove the source file
-      const remove = await fs.unlink(genFilePath, (err) => {
+      const remove = await fs.unlink(genFilePath, (err: any) => {
         if (err) {
           throw new errors.ApplicationError(err);
           return;
@@ -59,7 +60,7 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
       console.log(error);
     }
   },
-
+  
   index(ctx) {
     ctx.body = strapi
       .plugin('text2banner')
